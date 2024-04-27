@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 # This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK for Python.
@@ -27,7 +28,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        speak_output = "Welcome to Voicery"
+        speak_output = "Welcome to Voicery. How can I assist you today?"
 
         return (
             handler_input.response_builder
@@ -67,26 +68,6 @@ class FoodInfoIntentHandler(AbstractRequestHandler):
             handler_input.response_builder.speak(speak_output).response
             )
     
-class FoodRequestIntentHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("FoodRequestIntent")(handler_input)
-
-    def handle(self, handler_input):
-        slots = handler_input.request_envelope.request.intent.slots
-        food_type = slots.get("foodtype")
-        
-        if food_type and food_type.value:
-            food_type = food_type.value.lower()  # Convert to lowercase for case-insensitive comparison
-            available_food_types = ["bananas", "pasta", "apples", "oranges", "pizza", "chicken"]
-            
-            if food_type in available_food_types:
-                speak_output = f"Yes, we offer {food_type}!"
-            else:
-                speak_output = f"Sorry, we don't currently offer {food_type}."
-        else:
-            speak_output = "I'm sorry, I didn't catch that. Could you please specify the food type again?"
-        return handler_input.response_builder.speak(speak_output).ask(speak_output).response
-
 
 class OrderFoodIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
@@ -96,22 +77,35 @@ class OrderFoodIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         slots = handler_input.request_envelope.request.intent.slots
         food_type = slots["foodtype"].value  # Get the food type from the slot
-        quantity = slots["quantity"].value if "quantity" in slots else "one"  # Get the quantity from the slot, default to "one" if not provided
+        
+        # Parse the quantity from the slot
+        quantity = int(slots["quantity"].value) if "quantity" in slots and slots["quantity"].value else 1  
 
-        # Retrieve the user's cart from session attributes
-        session_attr = handler_input.attributes_manager.session_attributes
-        user_cart = session_attr.get('cart', [])
+        # Define the list of available food items
+        available_food_items = ["bananas", "apples", "nuts", "pizza", "chicken", "orange", "grapes", "strawberries", "blueberries", "tomatoes", "cucumbers", "carrots", "potatoes", "broccoli", "spinach", "kale", "avocados", "peaches", "pears", "pineapples", "watermelons", "mangoes", "papayas", "cherries", "kiwis"]
 
-        # Add the item to the cart
-        user_cart.append(f"{quantity} {food_type}")
+        # Check if the requested food type is in the list of available food items
+        if food_type.lower() not in available_food_items:
+            # If the requested food type is not available, inform the user
+            speak_output = f"Sorry, we currently don't offer {food_type}."
+        else:
+            # Retrieve the user's cart from session attributes
+            session_attr = handler_input.attributes_manager.session_attributes
+            user_cart = session_attr.get('cart', [])
 
-        # Update session attributes with the modified cart
-        session_attr['cart'] = user_cart
+            # Add the item to the cart
+            user_cart.extend([food_type] * quantity)
 
-        # Build the response message indicating the order
-        speak_output = f"Okay, I'll add {quantity} {food_type} to your cart."
+            # Update session attributes with the modified cart
+            session_attr['cart'] = user_cart
+
+            # Build the response message indicating the order
+            speak_output = f"Okay, I'll add {quantity} {food_type}{'s' if quantity > 1 else ''} to your cart."
 
         return handler_input.response_builder.speak(speak_output).ask(speak_output).response
+
+
+
 
     
 #add CartManagementIntentHandler  
@@ -134,10 +128,6 @@ class CartManagementIntentHandler(AbstractRequestHandler):
             speak_output = "Your cart is empty."
 
         return handler_input.response_builder.speak(speak_output).response
-
-
-
-    
 
 class ModifyOrderIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
@@ -162,6 +152,7 @@ class ModifyOrderIntentHandler(AbstractRequestHandler):
         
         # Return the response with speech and reprompt
         return handler_input.response_builder.speak(speak_output).ask(speak_output).response
+
 class RepeatOrderIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # Check if the user invoked the "RepeatOrderIntent"
@@ -198,14 +189,14 @@ class CheckOutIntentHandler(AbstractRequestHandler):
             speak_output = "Your cart is empty. Please add items to your cart before checking out."
             return handler_input.response_builder.speak(speak_output).response
 
-        # Confirm the order
+    # Construct the confirmation message
         confirm_order_message = "Your order includes:"
         for item in user_cart:
             confirm_order_message += f" {item},"  # Append each item in the cart
         confirm_order_message += " Is this correct?"
-
+        
         # Set the state to confirm the order
-        session_attr['state'] = 'confirm order'
+        session_attr['state'] = 'confirm_order'
 
         return (
             handler_input.response_builder
@@ -214,7 +205,62 @@ class CheckOutIntentHandler(AbstractRequestHandler):
                 .response
         )
 
+class ConfirmCheckOutIntentHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # Check if the user invoked the "ConfirmCheckOutIntent"
+        return ask_utils.is_intent_name("ConfirmCheckOutIntent")(handler_input)
 
+    def handle(self, handler_input):
+        # Retrieve session attributes
+        session_attr = handler_input.attributes_manager.session_attributes
+
+        # Check if the user has confirmed the order
+        user_response = ask_utils.get_slot_value(handler_input, "confirmation")
+
+        if user_response and user_response.lower() == "yes":
+            # User confirmed the order, proceed with checkout logic
+            # Example: Finalize the order, process payment, etc.
+            session_attr['checked_out'] = True  # Set the flag to indicate the order has been checked out
+
+            # Construct the response for completing the order
+            order_summary = ", ".join(session_attr.get('cart', []))
+            speak_output = f"Your order has been completed. You just ordered {order_summary}. Thank you for your purchase!"
+            # Set the state to track the order
+            session_attr['state'] = 'track_order'
+        else:
+            # User didn't confirm the order, handle accordingly
+            speak_output = "Okay, let me know if you need any further assistance with your order."
+
+        return (
+            handler_input.response_builder
+                .speak(speak_output)
+                .response
+        )
+
+class TrackOrderIntentHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # Check if the user invoked the "TrackOrderIntent"
+        return ask_utils.is_intent_name("TrackOrderIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # Check if the user has confirmed and checked out the order
+        session_attr = handler_input.attributes_manager.session_attributes
+        if session_attr.get('confirm_checked_out', False):
+            # Your logic to track the order can go here
+            # For example, you might check the order status in a database or external system
+            order_status = "out for delivery"
+
+            # Generate a response based on the order status
+            if order_status:
+                speak_output = f"Your order is currently {order_status}."
+            else:
+                speak_output = "I'm sorry, but we couldn't find information about your order at the moment."
+        else:
+            # User hasn't confirmed and checked out the order, so don't provide order tracking information
+            speak_output = "You haven't placed an order yet or completed your purchase. Please complete your purchase first."
+
+        # Return the response with speech and reprompt
+        return handler_input.response_builder.speak(speak_output).ask(speak_output).response
 
 
 class RecommendationIntentHandler(AbstractRequestHandler):
@@ -238,30 +284,7 @@ class RecommendationIntentHandler(AbstractRequestHandler):
         # Return the response with speech and reprompt
         return handler_input.response_builder.speak(speak_output).ask(speak_output).response
 
-class TrackOrderIntentHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        # Check if the user invoked the "TrackOrderIntent"
-        return ask_utils.is_intent_name("TrackOrderIntent")(handler_input)
 
-    def handle(self, handler_input):
-        # Check if the user has checked out
-        session_attr = handler_input.attributes_manager.session_attributes
-        if session_attr.get('checked_out', False):
-            # Your logic to track the order can go here
-            # For example, you might check the order status in a database or external system
-            order_status = "out for delivery"
-
-            # Generate a response based on the order status
-            if order_status:
-                speak_output = f"Your order is currently {order_status}."
-            else:
-                speak_output = "I'm sorry, but we couldn't find information about your order at the moment."
-        else:
-            # User hasn't checked out, so don't provide order tracking information
-            speak_output = "You haven't placed an order yet. Please complete your purchase first."
-
-        # Return the response with speech and reprompt
-        return handler_input.response_builder.speak(speak_output).ask(speak_output).response
 
 
 class CancelOrStopIntentHandler(AbstractRequestHandler):
@@ -278,6 +301,7 @@ class CancelOrStopIntentHandler(AbstractRequestHandler):
         return (
             handler_input.response_builder
                 .speak(speak_output)
+                .ask
                 .response
         )
 
@@ -327,7 +351,7 @@ class IntentReflectorHandler(AbstractRequestHandler):
         return (
             handler_input.response_builder
                 .speak(speak_output)
-                # .ask("add a reprompt if you want to keep the session open for the user to respond")
+                .ask("add a reprompt if you want to keep the session open for the user to respond")
                 .response
         )
 
@@ -365,19 +389,18 @@ sb.add_request_handler(LaunchRequestHandler())
 
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(FoodInfoIntentHandler())
-sb.add_request_handler(FoodRequestIntentHandler())
+
 sb.add_request_handler(OrderFoodIntentHandler())
 sb.add_request_handler(CartManagementIntentHandler())
 sb.add_request_handler(ModifyOrderIntentHandler())
 sb.add_request_handler(RepeatOrderIntentHandler())
 sb.add_request_handler(CheckOutIntentHandler())
+sb.add_request_handler(ConfirmCheckOutIntentHandler())
 sb.add_request_handler(RecommendationIntentHandler())
 sb.add_request_handler(TrackOrderIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
-sb.add_request_handler(IntentReflectorHandler()) # make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
-
 sb.add_exception_handler(CatchAllExceptionHandler())
-
+sb.add_request_handler(IntentReflectorHandler()) # make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
 lambda_handler = sb.lambda_handler()

@@ -1,0 +1,496 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "slots": [],
+          "name": "FoodInfoIntent",
+          "samples": [
+            "what food do you offer",
+            "what food are available",
+            "what food do you have ",
+            "show me the food you offer"
+          ]
+        },
+        {
+          "slots": [
+            {
+              "name": "foodtype",
+              "type": "FOODTYPE"
+            },
+            {
+              "name": "quanitity",
+              "type": "QUANTITY"
+            }
+          ],
+          "name": "OrderFoodIntent",
+          "samples": [
+            "i want to order {foodtype}",
+            "I would like to order {quanitity} {foodtype}",
+            "add {foodtype} to my cart",
+            "add {quanitity} {foodtype} to my order",
+            "order {quanitity} {foodtype}",
+            "place an order for {foodtype}",
+            "I\u0027d like to order some {foodtype}"
+          ]
+        },
+        {
+          "slots": [
+            {
+              "name": "foodtype",
+              "type": "FOODTYPE"
+            },
+            {
+              "name": "quantity",
+              "type": "QUANTITY"
+            }
+          ],
+          "name": "ModifyOrderIntent",
+          "samples": [
+            "I want to change my order to {quantity} {foodtype}",
+            "Can you adjust my order to {quantity} {foodtype}  ",
+            "Cancel my order for {foodtype}",
+            "Update my order to {quantity} {foodtype} ",
+            "Change my order for {foodtype}  to {quantity}",
+            "Change my order to include a large instead of {foodtype}",
+            "Cancel the last item I added to my cart",
+            "remove {foodtype} from cart",
+            "Remove {foodtype} from my shopping list"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "CheckOutIntent",
+          "samples": [
+            "place my order",
+            "Check out",
+            "Finish order",
+            "I\u0027m ready to check out"
+          ]
+        },
+        {
+          "slots": [
+            {
+              "name": "specialfood",
+              "type": "SPECIALFOOD"
+            }
+          ],
+          "name": "RecommendationIntent",
+          "samples": [
+            "What do you recommend to me today",
+            "recommend to me some special food ",
+            "what {specialfood} today",
+            "Suggest some special food  for me",
+            "What do you recommend for dinner tonight"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "TrackOrderIntent",
+          "samples": [
+            "where is my food",
+            "check my order",
+            "how long will my order be ",
+            "check my order status ",
+            "where is my order"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "RepeatOrderIntent",
+          "samples": [
+            "what i have on my cart",
+            "repeat my cart",
+            "Can you add my usual items to my cart",
+            "Order the same groceries as last week",
+            "Repeat my last order"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "CartManagementIntent",
+          "samples": [
+            "what do i have on my cart",
+            "what are available in my cart",
+            "tell me what do i have on my cart",
+            "what i just add on my cart",
+            "what is in my cart"
+          ]
+        },
+        {
+          "slots": [
+            {
+              "name": "confirmation",
+              "type": "CONFIRMATION"
+            }
+          ],
+          "name": "ConfirmCheckOutIntent",
+          "samples": [
+            "{confirmation} confirm",
+            "{confirmation} that\u0027s correct",
+            "{confirmation} "
+          ]
+        }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "name": {
+                "value": "fresh samon"
+              }
+            },
+            {
+              "name": {
+                "value": "sea bass fillets"
+              }
+            },
+            {
+              "name": {
+                "value": "smoked salmon"
+              }
+            },
+            {
+              "name": {
+                "value": "smoked basa fillets"
+              }
+            },
+            {
+              "name": {
+                "value": "cheese"
+              }
+            },
+            {
+              "name": {
+                "value": "chicken mini fillets"
+              }
+            },
+            {
+              "name": {
+                "value": "chicken breast"
+              }
+            },
+            {
+              "name": {
+                "value": "sweet peppers"
+              }
+            },
+            {
+              "name": {
+                "value": "red pepper"
+              }
+            },
+            {
+              "name": {
+                "value": "broccoli"
+              }
+            },
+            {
+              "name": {
+                "value": "onions loose"
+              }
+            },
+            {
+              "name": {
+                "value": "carrots"
+              }
+            },
+            {
+              "name": {
+                "value": "stawberries"
+              }
+            },
+            {
+              "name": {
+                "value": "red grapefruit"
+              }
+            },
+            {
+              "name": {
+                "value": "raspberries"
+              }
+            },
+            {
+              "name": {
+                "value": "braeburn"
+              }
+            },
+            {
+              "name": {
+                "value": "limes"
+              }
+            },
+            {
+              "name": {
+                "value": "bluberiies"
+              }
+            },
+            {
+              "name": {
+                "value": "avocados"
+              }
+            },
+            {
+              "name": {
+                "value": "peelers"
+              }
+            },
+            {
+              "name": {
+                "value": "seedless grapes"
+              }
+            },
+            {
+              "name": {
+                "value": "lemons"
+              }
+            },
+            {
+              "name": {
+                "value": "apple"
+              }
+            },
+            {
+              "name": {
+                "value": "pear"
+              }
+            },
+            {
+              "name": {
+                "value": "beef bones"
+              }
+            },
+            {
+              "name": {
+                "value": "whole chicken"
+              }
+            },
+            {
+              "name": {
+                "value": "plums"
+              }
+            },
+            {
+              "name": {
+                "value": "grapes"
+              }
+            },
+            {
+              "name": {
+                "value": "orange"
+              }
+            },
+            {
+              "name": {
+                "value": "tomato"
+              }
+            },
+            {
+              "name": {
+                "value": "potato"
+              }
+            },
+            {
+              "name": {
+                "value": "cucumber"
+              }
+            },
+            {
+              "name": {
+                "value": "carrot"
+              }
+            },
+            {
+              "name": {
+                "value": "bananas"
+              }
+            }
+          ],
+          "name": "FOODTYPE"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "synonyms": [
+                  "eight"
+                ],
+                "value": "8"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "seven"
+                ],
+                "value": "7"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "six"
+                ],
+                "value": "6"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "five"
+                ],
+                "value": "5"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "four"
+                ],
+                "value": "4"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "three"
+                ],
+                "value": "3"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "a few",
+                  "two"
+                ],
+                "value": "2"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "one"
+                ],
+                "value": "1"
+              }
+            }
+          ],
+          "name": "QUANTITY"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "synonyms": [
+                  "ten pounds off"
+                ],
+                "value": "£10 off"
+              }
+            },
+            {
+              "name": {
+                "value": "20% off"
+              }
+            },
+            {
+              "name": {
+                "value": "birthday offer"
+              }
+            },
+            {
+              "name": {
+                "value": "mid night offer"
+              }
+            },
+            {
+              "name": {
+                "synonyms": [
+                  "15%off"
+                ],
+                "value": "15 % off"
+              }
+            }
+          ],
+          "name": "OFFER"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "Plant-Based Delights"
+              }
+            },
+            {
+              "name": {
+                "value": "Fusion Tacos"
+              }
+            },
+            {
+              "name": {
+                "value": "Superfood Bowls"
+              }
+            },
+            {
+              "name": {
+                "value": "Exotic Desserts"
+              }
+            },
+            {
+              "name": {
+                "value": "Artisanal Pasta:"
+              }
+            },
+            {
+              "name": {
+                "value": "Gourmet Burgers"
+              }
+            },
+            {
+              "name": {
+                "value": "Signature Sushi Rolls"
+              }
+            },
+            {
+              "name": {
+                "value": "Chef\u0027s Special Pizza"
+              }
+            }
+          ],
+          "name": "SPECIALFOOD"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "yes"
+              }
+            }
+          ],
+          "name": "CONFIRMATION"
+        }
+      ],
+      "invocationName": "voice grocery"
+    }
+  }
+}
